@@ -1,3 +1,8 @@
+// Type definitions for jsClipper.js
+// Project: https://github.com/mathisonian/JsClipper
+// Definitions by: Hou Chunlei <https://github.com/omni360>
+// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
+// 
 declare module ClipperLib {
 
 	export var biginteger_used: boolean;
