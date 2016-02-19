@@ -1,0 +1,30 @@
+{
+  "name": "jsClipper.d.ts",
+  "version": "1.0.0",
+  "description": "Type definitions for jsClipper.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/omni360/jsClipper.d.ts.git"
+  },
+  "scripts": {
+    "test": "mocha ./jsClipper-test.js"
+  },
+  "typescript": {
+    "definition": "jsClipper.d.ts"
+  },
+  "keywords": [
+    "jsClipper.js",
+    "typescript",
+    "definition"
+  ],
+  "author": "Hou,Chunlei",
+  "license": "SEE LICENSE IN <LICENSE>",
+  "bugs": {
+    "url": "https://github.com/omni360/jsClipper.d.ts/issues"
+  },
+  "homepage": "https://github.com/omni360/jsClipper.d.ts#readme",
+  "devDependencies": {
+    "mocha": "^2.4.5",
+    "js-clipper": "^1.0.1"
+  }
+}

@@ -1,0 +1,7 @@
+#ignore any javascript
+*.js
+**/*.js
+npm-debug.log
+
+#ignore node modules
+node_modules
