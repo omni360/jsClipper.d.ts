@@ -34,9 +34,16 @@ declare module ClipperLib {
 		constructor(left: number, top: number,right:number,bottom:number);
 	}
 
-	export function Polygon ():ArrayLike<IntPoint>;
+	export class Polygon{
+		constructor();
+		constructor(poly:ArrayLike<IntPoint>);
+	}
 
-	export function Polygons(): ArrayLike<ArrayLike<IntPoint>>;
+	export class Polygons{
+		constructor();
+		constructor(polys: ArrayLike<ArrayLike<IntPoint>>);
+	}
+		
 
 	export class ExPolygon{
 		outer: ArrayLike<IntPoint>;
@@ -149,6 +156,7 @@ declare module ClipperLib {
 		GetBounds(): IntRect;
 
 	}
+
 	export class Clipper extends ClipperBase{
 		m_PolyOuts: TEdge | ArrayLike<TEdge>;
 		m_ClipType: ClipType;
@@ -163,6 +171,8 @@ declare module ClipperLib {
 		m_HorizJoins: ArrayLike<HorzJoinRec>;
 		m_ReverseOutput: boolean;
 		m_UsingExPolygons: boolean;
+		DoublePoint: Function;
+		PolyOffsetBuilder: Function;
 
 		DisposeScanbeamList(): void;
 		get_ReverseSolution(): boolean;
@@ -170,10 +180,122 @@ declare module ClipperLib {
 		InsertScanbeam(Y: number): void;
 		Execute(clipType: ClipType, solution: ArrayLike<IntPoint> | ExPolygon ): boolean;
 		Execute(clipType: ClipType, solution: ArrayLike<IntPoint> | ExPolygon, subjFillType: PolyFillType, clipFillType: PolyFillType): boolean;
+		PolySort(or1: OutRec, or2: OutRec): number;
+		FindAppendLinkEnd(outRec: OutRec): OutRec;
+		FixHoleLinkage(outRec: OutRec): void;
+		ExecuteInternal(): boolean;
+		PopScanbeam(): number;
+		DisposeOutRec(index: number): void;
+		DisposeOutPts(pp: OutPt): void;
+		AddJoin(e1: TEdge, e2: TEdge, e1OutIdx: number, e2OutIdx: number): void;
+		AddHorzJoin(e: TEdge, idx: number);
+		InsertLocalMinimaIntoAEL(botY: number): void;
+		InsertEdgeIntoAEL(edge: TEdge);
+		E2InsertsBeforeE1(e1: TEdge, e2: TEdge): boolean;
+		IsEvenOddFillType(edge: TEdge): boolean;
+		IsEvenOddAltFillType(edge: TEdge): boolean;
+		IsContributing(edge: TEdge): boolean;
+		SetWindingCount(edge: TEdge): void;
+		AddEdgeToSEL(edge: TEdge): void;
+		CopyAELToSEL(): void;
+		SwapPositionsInAEL(edge1: TEdge, edge2: TEdge): void;
+		SwapPositionsInSEL(edge1: TEdge, edge2: TEdge): void;
+		AddLocalMaxPoly(e1: TEdge, e2: TEdge, pt: OutPt): void;
+		AddLocalMinPoly(e1: TEdge, e2: TEdge, pt: OutPt): void;
+		CreateOutRec(): OutRec;
+		AddOutPt(e: TEdge, pt: IntPoint): void;
+		SwapPoints(pt1: IntPoint, pt2: IntPoint): void;
+		GetOverlapSegment(pt1a: IntPoint, pt1b: IntPoint, pt2a: IntPoint, pt2b: IntPoint, pt1: IntPoint, pt2: IntPoint): boolean;
+		FindSegment(pp: IntPoint, pt1: IntPoint, pt2: IntPoint): boolean;
+		Pt3IsBetweenPt1AndPt2(pt1: boolean, pt2: boolean, pt3: boolean): OutPt;
+		InsertPolyPtBetween(p1: OutPt, p2: OutPt, pt: OutPt): OutPt;
+		SetHoleState(e: TEdge, outRec: OutRec);
+		GetDx(pt1: IntPoint, pt2: IntPoint): number;
+		FirstIsBottomPt(btmPt1: OutPt, btmPt2: OutPt): boolean;
+		GetBottomPt(pp: OutPt);
+		GetLowermostRec(outRec1: OutRec, outRec2: OutRec): OutRec;
+		Param1RightOfParam2(outRec1: OutRec, outRec2: OutRec): boolean;
+		AppendPolygon(e1: TEdge, e2: TEdge): void;
+		ReversePolyPtLinks(pp: OutPt);
+		SwapSides(edge1: TEdge, edge2: TEdge): void;
+		SwapPolyIndexes(edge1: TEdge, edge2: TEdge): void;
+		DoEdge1(edge1: TEdge, edge2: TEdge, pt: OutPt): void;
+		DoEdge2(edge1: TEdge, edge2: TEdge, pt: OutPt): void;
+		DoBothEdges(edge1: TEdge, edge2: TEdge, pt: OutPt): void;
+		IntersectEdges(e1: TEdge, e2: TEdge, pt: OutPt, protects: Protects): void;
+		DeleteFromAEL(e: TEdge): void;
+		DeleteFromSEL(e: TEdge): void;
+		UpdateEdgeIntoAEL(e: TEdge): void;
+		ProcessHorizontals(): void;
+		ProcessHorizontal(horzEdge: TEdge): void;
+		IsTopHorz(horzEdge: TEdge, XPos: IntPoint): boolean;
+		GetNextInAEL(e: TEdge, Direction: TEdge): TEdge;
+		IsMinima(e: TEdge): boolean;
+		IsMaxima(e: TEdge, Y: number): boolean;
+		IsIntermediate(e: TEdge, Y: number): boolean;
+		GetMaximaPair(e: TEdge): TEdge;
+		ProcessIntersections(botY: number, topY: number): boolean;
+		BuildIntersectList(botY: number, topY: number): void;
+		FixupIntersections(): boolean;
+		ProcessIntersectList(): void;
+		Round(a): number;
+		TopX(edge: TEdge, currentY: number): number;
+		AddIntersectNode(e1: TEdge, e2: TEdge, pt: IntPoint): void;
+		ProcessParam1BeforeParam2(node1: IntersectNode, node2: IntersectNode): boolean;
+		SwapIntersectNodes(int1:IntersectNode,int2:IntersectNode);
+		IntersectPoint(edge1: TEdge, edge2: TEdge, ip: IntPoint): boolean;
+		DisposeIntersectNodes(): void;
+		ProcessEdgesAtTopOfScanbeam(topY: number): void;
+		DoMaxima(e: TEdge, topY: number): void;
+		ReversePolygons(polys: Polygons): void;
+		Orientation(poly: Polygon): boolean;
+		PointCount(pts: ArrayLike<OutPt>): number;
+		BuildResult(polyg: Polygon): void;
+		BuildResultEx(polyg: ExPolygon): void;
+		FixupOutPolygon(outRec: OutPt): void;
+		JoinPoints(j: JoinRec, p1: IntPoint, p2: IntPoint): boolean;
+		FixupJoinRecs(j: JoinRec, pt: JoinRec, startIdx: number);
+		JoinCommonEdges(): void;
+		FullRangeNeeded(pts: ArrayLike<IntPoint>): boolean;
+		Area(poly:Polygon): number;
+		Area(outRec: OutRec, UseFull64BitRange: boolean);
+		BuildArc(pt: IntPoint, a1: IntPoint, a2: IntPoint, r: number): Polygon;
+		GetUnitNormal(pt1: IntPoint, pt2: IntPoint): DoublePoint;
+		OffsetPolygons(poly: Polygon, delta: number, jointype: JoinType, MiterLimit: number, AutoFix: boolean): ArrayLike<ArrayLike<IntPoint>>;
+		SimplifyPolygon(poly: Polygon, fillType: PolyFillType): Polygon;
+		SimplifyPolygons(polys: Polygons, fillType: PolyFillType): Polygons;
 
 
 	}
+	export class DoublePoint{
+		X: number;
+		Y: number;
+		constructor(x: number, y: number);
+	}
 
+	export class PolyOffsetBuilder{
+		pts: Polygons;
+		currentPoly: Polygon;
+		normals: ArrayLike<IntPoint>;
+		delta: number;
+		m_R: number;
+		m_i: number;
+		m_j: number;
+		m_k: number;
+		botPt: PolyOffsetBuilder;
+
+		constructor(pts: Polygons, solution: { value: Polygons }, delta: number, jointype: JoinType, MiterLimit: number, AutoFix: boolean);
+		UpdateBotPt(pt: IntPoint): boolean;
+		AddPoint(pt: IntPoint): void;
+		DoSquare(mul: number): void;
+		DoMiter(): void;
+		DoRound(): void;
+	}
+	export function Error(message: string): void;
+	export function Clone(polygon: ArrayLike<IntPoint> | ArrayLike<ArrayLike<IntPoint>>): ArrayLike<IntPoint> | ArrayLike<ArrayLike<IntPoint>>;
+	export function Clean(polygon: ArrayLike<IntPoint> | ArrayLike<ArrayLike<IntPoint>>, delta: number): ArrayLike<IntPoint> | ArrayLike<ArrayLike<IntPoint>>;
+	export function Lighten(polygon: ArrayLike<IntPoint> | ArrayLike<ArrayLike<IntPoint>>, tolerance: number): ArrayLike<IntPoint> | ArrayLike<ArrayLike<IntPoint>>;
 	
 
 }
+	
